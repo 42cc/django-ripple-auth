@@ -15,7 +15,7 @@ setup(
     license='BSD',
     description='Ripple-based login for django project.',
     long_description=README,
-    url='https://github.com/AlexandrDidyk/django-ripple-auth',
+    url='https://github.com/42cc/django-ripple-auth',
     author='',
     author_email='',
     classifiers=[
@@ -29,5 +29,9 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+    ],
+    install_requires=[
+        "Django==1.8.4",
+        "nodejs==0.1.1"
     ],
 )
