@@ -7,7 +7,7 @@ Install
     pip install git+https://github.com/AlexandrDidyk/django-ripple-auth
 or
 
-    git clone git://github.com/rbarrois/factory_boy/
+    git clone https://github.com/AlexandrDidyk/django-ripple-auth.git
     python setup.py install
 
 Usage
