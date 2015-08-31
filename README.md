@@ -37,6 +37,12 @@ Usage
 4. Add sjcl library and it's dependencies to to login template:
 
 
+        {% load sjcl_scripts %}
+    
+and to <head>:
+
+        {% sjcl_scripts %}
+
 5. Declare in template new AngularJS app and controller:
 
 
