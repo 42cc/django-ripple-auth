@@ -4,6 +4,7 @@
 import os
 import json
 import binascii
+import logging
 
 # django
 from django.contrib.auth import authenticate, login
@@ -13,6 +14,9 @@ from django.http.response import HttpResponseRedirect, HttpResponse, \
 
 # third party
 from nodejs.bindings import node_run
+
+
+logger = logging.getLogger('ripple_auth')
 
 
 SIGN_PARAMS = """
