@@ -39,7 +39,7 @@ Usage
 
         {% load sjcl_scripts %}
     
-and to <head>:
+    and to <head>:
 
         {% sjcl_scripts %}
 
