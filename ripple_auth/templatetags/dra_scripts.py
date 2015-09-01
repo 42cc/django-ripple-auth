@@ -50,8 +50,6 @@ def dra_scripts():
     <script src="static/js/app/tracker.js"></script>
     <script src="static/js/app/async.js"></script>
     <script src="static/js/app/challenge.js"></script>
-    <script src="js/verify_challenge/challenge_sign_params.js"></script>
-    <script src="js/verify_challenge/verify_challenge.js"></script>
 
     <script src="static/js/libs/store.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/0.15.7/superagent.js"></script>

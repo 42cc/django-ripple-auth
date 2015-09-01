@@ -53,13 +53,22 @@ def return_challenge(request):
     ripple_address = data.get('ripple_address', None)
     username = data.get('username', None)
 
+    challenge_sign_params = os.path.join(
+        os.path.dirname(__file__),
+        'static/js/verify_challenge/challenge_sign_params.js'
+    )
+    verify_challenge = os.path.join(
+        os.path.dirname(__file__),
+        'static/js/verify_challenge/verify_challenge.js'
+    )
+
     # Write received sign params to js file
     logger.info('Writing sign params to js')
-    f = open('assets/js/verify_challenge/challenge_sign_params.js', 'w+b')
+    f = open(challenge_sign_params, 'w+b')
     f.write(SIGN_PARAMS % (challenge, signature, public_key))
     f.close()
 
-    stderr, stdout = node_run('assets/js/verify_challenge/verify_challenge.js')
+    stderr, stdout = node_run(verify_challenge)
     if stdout.strip() != 'true':
         logger.warning('Challenge not verified')
         return HttpResponseForbidden()
@@ -71,7 +80,7 @@ def return_challenge(request):
         return HttpResponseForbidden()
 
     # clear js file
-    f = open('assets/js/verify_challenge/challenge_sign_params.js', 'w+b')
+    f = open(challenge_sign_params, 'w+b')
     f.close()
 
     logger.info('Challenge successfully verified')
