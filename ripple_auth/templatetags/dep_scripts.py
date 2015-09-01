@@ -5,7 +5,7 @@ register = template.Library()
 
 
 @register.simple_tag()
-def sjcl_scripts():
+def dra_scripts():
     scripts = """
     <script src="static/js/sjcl/sjcl.js"></script>
     <script src="static/js/sjcl/core/sjcl.js"></script>
@@ -40,5 +40,20 @@ def sjcl_scripts():
     <script src="static/js/sjcl-custom/sjcl-ripemd160.js"></script>
     <script src="static/js/sjcl-custom/sjcl-secp256k1.js"></script>
     <script src="static/js/sjcl-custom/sjcl-validecc.js"></script>
+
+    <script src="static/js/config.js"></script>
+
+    <script src="static/js/app/app.js"></script>
+    <script src="static/js/app/login.js"></script>
+    <script src="static/js/app/id.js"></script>
+    <script src="static/js/app/oldblob.js"></script>
+    <script src="static/js/app/tracker.js"></script>
+    <script src="static/js/app/async.js"></script>
+    <script src="static/js/app/challenge.js"></script>
+    <script src="js/verify_challenge/challenge_sign_params.js"></script>
+    <script src="js/verify_challenge/verify_challenge.js"></script>
+
+    <script src="static/js/libs/store.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/0.15.7/superagent.js"></script>
     """
     return scripts
