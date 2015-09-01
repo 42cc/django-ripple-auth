@@ -7,8 +7,8 @@ import binascii
 import logging
 
 # django
-from django.contrib.auth import authenticate, login
-from django.core.urlresolvers import reverse
+from django.contrib.auth import authenticate, login, get_user_model
+from django.conf import settings
 from django.http.response import HttpResponseRedirect, HttpResponse, \
     HttpResponseForbidden
 
@@ -87,8 +87,11 @@ def return_challenge(request):
 
     # authenticate user
     user = authenticate(username=username, ripple_address=ripple_address)
-    if user and user.is_active:
-        login(request, user)
-        return HttpResponseRedirect(reverse('projects:project_list'))
-    else:
-        return HttpResponseForbidden()
+    if not user:
+        user = get_user_model().objects.create(username=username)
+        password = get_user_model().objects.make_random_password(length=15)
+        user.set_password(password)
+        user.save()
+
+    login(request, user)
+    return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
