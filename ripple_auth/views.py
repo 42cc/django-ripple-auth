@@ -87,11 +87,9 @@ def return_challenge(request):
 
     # authenticate user
     user = authenticate(username=username, ripple_address=ripple_address)
-    if not user:
-        user = get_user_model().objects.create(username=username)
-        password = get_user_model().objects.make_random_password(length=15)
-        user.set_password(password)
-        user.save()
-
-    login(request, user)
-    return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+    if user and user.is_active:
+        login(request, user)
+        return HttpResponseRedirect(
+            getattr(settings, 'LOGIN_REDIRECT_URL') or '/')
+    else:
+        return HttpResponseForbidden()
