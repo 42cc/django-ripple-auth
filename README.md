@@ -14,12 +14,13 @@ Usage
 -----
 
 1. Add **ripple_auth** to INSTALLED_APPS
-2. Also you need to add following to template:
+2. Add 'ripple_auth.backend.RippleAuthBackend' to AUTHENTICATION_BACKENDS
+3. Also you need to add following to template:
     * AngularJS
     * angular-route
     
     
-3. Add sjcl library and it's dependencies to to login template:
+4. Add sjcl library and it's dependencies to to login template:
 
 
         {% load dra_scripts %}
@@ -28,7 +29,7 @@ Usage
 
         {% dra_scripts %}
 
-4. Declare in template new AngularJS app and controller:
+5. Declare in template new AngularJS app and controller:
 
 
         <div ng-app="loginApp" class="row">
@@ -37,7 +38,7 @@ Usage
             </form>
         </div>
 
-5. Add separate submit button for login via ripple:
+6. Add separate submit button for login via ripple:
 
 
         <a rp-spinner="" ng-disabled="ajax_loading"
@@ -49,7 +50,7 @@ Usage
           {% endverbatim %}
         </a>
 
-6. Add to urls following patterns:
+7. Add to urls following patterns:
 
 
         from ripple_auth.views import get_challenge, return_challenge
