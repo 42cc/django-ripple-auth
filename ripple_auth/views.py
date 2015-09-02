@@ -89,7 +89,6 @@ def return_challenge(request):
     user = authenticate(username=username, ripple_address=ripple_address)
     if user and user.is_active:
         login(request, user)
-        return HttpResponseRedirect(
-            getattr(settings, 'LOGIN_REDIRECT_URL') or '/')
+        return HttpResponseRedirect('/')
     else:
         return HttpResponseForbidden()

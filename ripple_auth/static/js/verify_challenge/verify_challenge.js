@@ -1,4 +1,4 @@
-var NodeRSA = require('../imports/node-rsa');
+var NodeRSA = require('../libs/node-rsa');
 var key = new NodeRSA();
 
 // get challenge sign params for js file

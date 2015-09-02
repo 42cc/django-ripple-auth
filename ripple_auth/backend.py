@@ -18,8 +18,7 @@ class RippleAuthBackend:
     def authenticate(self, username=None, ripple_address=None):
         try:
             # Try to find a user with specified ripple address in profile
-            user = get_user_model().objects.get(
-                userprofile__ripple_address=ripple_address)
+            user = get_user_model().objects.get(username=username)
             return user
         except get_user_model().DoesNotExist:
             # Create new user with specified ripple address
