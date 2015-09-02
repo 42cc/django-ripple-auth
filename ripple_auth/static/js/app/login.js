@@ -157,12 +157,13 @@
                     username = $scope.username;
 
                   $challenge.returnChallenge(challenge, signature, pkey, ripple_address, username)
-                    .success(function (data) {
+                    .success(function(data) {
                       window.location.href = '/';
                       console.log('Login success');
                     })
-                    .error(function (data) {
+                    .error(function(err) {
                       console.log('Login failed');
+                      console.log(err);
                     });
                 });
 

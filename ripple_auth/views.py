@@ -7,8 +7,7 @@ import binascii
 import logging
 
 # django
-from django.contrib.auth import authenticate, login, get_user_model
-from django.conf import settings
+from django.contrib.auth import authenticate, login
 from django.http.response import HttpResponseRedirect, HttpResponse, \
     HttpResponseForbidden
 
@@ -71,13 +70,13 @@ def return_challenge(request):
     stderr, stdout = node_run(verify_challenge)
     if stdout.strip() != 'true':
         logger.warning('Challenge not verified')
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(stderr)
 
     if not stdout or stderr:
         logger.error(
             'An error occurred while verifying challenge: %s' % stderr
         )
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(stderr)
 
     # clear js file
     f = open(challenge_sign_params, 'w+b')
@@ -91,4 +90,4 @@ def return_challenge(request):
         login(request, user)
         return HttpResponseRedirect('/')
     else:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden('User was not found')
