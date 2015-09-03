@@ -158,7 +158,7 @@
 
                   $challenge.returnChallenge(challenge, signature, pkey, ripple_address, username)
                     .success(function(data) {
-                      window.location.href = '/';
+                      window.location.href = redirectUrl;
                       console.log('Login success');
                     })
                     .error(function(err) {
