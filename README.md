@@ -46,7 +46,7 @@ Usage
             class="btn btn-success btn-default">
           Sign in via ripple
           {% verbatim %}
-            <img width="20px" ng-src="{{ ajax_loading == true && '/static/img/ripple-throbber.gif' || '/static/images/ripple.png' }}">
+            <img width="20px" ng-src="{{ ajax_loading == true && '/static/img/ripple-throbber.gif' || '/static/img/ripple.png' }}">
           {% endverbatim %}
         </a>
 
