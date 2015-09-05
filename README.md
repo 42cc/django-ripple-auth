@@ -46,7 +46,7 @@ Usage
             class="btn btn-success btn-default">
           Sign in via ripple
           {% verbatim %}
-            <img width="20px" ng-src="{{ ajax_loading == true && 'https://app.p2pay.com/img/throbber5.gif' || '/static/images/ripple.png' }}">
+            <img width="20px" ng-src="{{ ajax_loading == true && '/static/img/ripple-throbber.gif' || '/static/images/ripple.png' }}">
           {% endverbatim %}
         </a>
 
