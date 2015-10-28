@@ -5,6 +5,7 @@ Install
 -------
 
     pip install git+https://github.com/42cc/django-ripple-auth
+
 or
 
     git clone https://github.com/42cc/django-ripple-auth.git
@@ -15,12 +16,7 @@ Usage
 
 1. Add **ripple_auth** to INSTALLED_APPS
 2. Add 'ripple_auth.backend.RippleAuthBackend' to AUTHENTICATION_BACKENDS
-3. Also you need to add following to template:
-    * AngularJS
-    * angular-route
-    
-    
-4. Add sjcl library and it's dependencies to to login template:
+3. Add all dependencies to login template using templatetag:
 
 
         {% load dra_scripts %}
@@ -29,20 +25,39 @@ Usage
 
         {% dra_scripts %}
 
-5. Declare in template new AngularJS app and controller:
+4. Declare in login page template new Angular app and following controllers.
+   In login form you should add following attributes to <input> fields:
 
-
-        <div ng-app="loginApp" class="row">
+        {% load dra_scripts %}
+        <html ng-app="rp" ng-controller="AppCtrl" ng-class="[$route.current.tabClass, $route.current.pageMode]">
+          <head>
+            ...
+          </head>
+          <body>
             <form ng-controller="LoginCtrl" action="">
                 ...
-            </form>
-        </div>
+                <label for="username">Username</label>
+                <input id="username" ng-model="username"
+                       class="form-control ng-pristine ng-invalid ng-invalid-required"
+                       required="required" rp-focus-on-empty="rp-focus-on-empty"
+                       rp-autofill="$routeParams.username"
+                       type="text" name="username" value="" size="50" />
 
-6. Add separate submit button for login via ripple:
+                <label for="password">Password</label>
+                <input id="password" rp-focus="rp-focus" ng-model="password"
+                       class="form-control ng-pristine ng-invalid ng-invalid-required"
+                       type="password" name="password" required="required" value=""
+                       size="50" />
+                ...
+            </form>
+          </body>
+        </html>
+
+5. Add separate submit button for login via ripple:
 
 
         <a rp-spinner="" ng-disabled="ajax_loading"
-           ng-hide="twoFactor" ng-click="submitOldForm()" href="" id="ripple-login"
+           ng-hide="twoFactor" ng-click="submitForm()" href="" id="ripple-login"
             class="btn btn-success btn-default">
           Sign in via ripple
           {% verbatim %}
@@ -50,7 +65,7 @@ Usage
           {% endverbatim %}
         </a>
 
-7. Add to urls following patterns:
+6. Add to urls following patterns:
 
 
         from ripple_auth.views import get_challenge, return_challenge
