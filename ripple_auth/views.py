@@ -8,7 +8,7 @@ import logging
 
 # django
 from django.contrib.auth import authenticate, login
-from django.http.response import HttpResponseRedirect, HttpResponse, \
+from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseForbidden
 
 # third party
