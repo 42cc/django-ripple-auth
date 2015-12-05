@@ -19,9 +19,9 @@ or
 Usage
 -----
 
-### Login via ripple
+#### Login via ripple
 
-1. Add required dependencies to login template using template tag:
+1. Add required dependencies to login page template using template tag:
 
         {% load dra_scripts %}
 
@@ -76,10 +76,12 @@ Usage
         url(r'^return_challenge/$', return_challenge, name='return_challenge')
 
 
-### Send ripple payments
+#### Send ripple payments
 
-1.
+1. Add required dependencies to send page template using template tag:
 
-2.
+        {% load dra_scripts %}
 
-3.
+    and to <head></head>:
+
+        {% dra_scripts %}
