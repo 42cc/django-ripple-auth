@@ -1641,18 +1641,11 @@
 	        break;
 	      // slower
 	      default:
-	        len = arguments.length;
-	        args = new Array(len - 1);
-	        for (i = 1; i < len; i++)
-	          args[i - 1] = arguments[i];
+	        args = Array.prototype.slice.call(arguments, 1);
 	        handler.apply(this, args);
 	    }
 	  } else if (isObject(handler)) {
-	    len = arguments.length;
-	    args = new Array(len - 1);
-	    for (i = 1; i < len; i++)
-	      args[i - 1] = arguments[i];
-
+	    args = Array.prototype.slice.call(arguments, 1);
 	    listeners = handler.slice();
 	    len = listeners.length;
 	    for (i = 0; i < len; i++)
@@ -1690,7 +1683,6 @@
 
 	  // Check for listener leak
 	  if (isObject(this._events[type]) && !this._events[type].warned) {
-	    var m;
 	    if (!isUndefined(this._maxListeners)) {
 	      m = this._maxListeners;
 	    } else {
@@ -1812,7 +1804,7 @@
 
 	  if (isFunction(listeners)) {
 	    this.removeListener(type, listeners);
-	  } else {
+	  } else if (listeners) {
 	    // LIFO order
 	    while (listeners.length)
 	      this.removeListener(type, listeners[listeners.length - 1]);
@@ -1833,15 +1825,20 @@
 	  return ret;
 	};
 
+	EventEmitter.prototype.listenerCount = function(type) {
+	  if (this._events) {
+	    var evlistener = this._events[type];
+
+	    if (isFunction(evlistener))
+	      return 1;
+	    else if (evlistener)
+	      return evlistener.length;
+	  }
+	  return 0;
+	};
+
 	EventEmitter.listenerCount = function(emitter, type) {
-	  var ret;
-	  if (!emitter._events || !emitter._events[type])
-	    ret = 0;
-	  else if (isFunction(emitter._events[type]))
-	    ret = 1;
-	  else
-	    ret = emitter._events[type].length;
-	  return ret;
+	  return emitter.listenerCount(type);
 	};
 
 	function isFunction(arg) {
@@ -3062,7 +3059,7 @@
 /* 16 */
 /***/ function(module, exports) {
 
-	// returns the raw address after removing any parameters 
+	// returns the raw address after removing any parameters
 	exports.stripRippleAddress = function (addr)
 	{
 	  if(typeof(addr)=='string')
@@ -3075,7 +3072,7 @@
 	  }
 	  return(addr);
 	}
-	//returns the destination tag of an address if there is one 
+	//returns the destination tag of an address if there is one
 	exports.getDestTagFromAddress = function (addr)
 	{
 	  var index=addr.indexOf("?");
@@ -3500,7 +3497,7 @@
 
 	        var shortValue = value.slice(0, 3).toUpperCase();
 
-	        if ( (shortValue==="XRP") || webutil.findIssuer(scope.lines,shortValue)) 
+	        if ( (shortValue==="XRP") || webutil.findIssuer(scope.lines,shortValue))
 	        {
 	          ctrl.$setValidity('rpIssuer', true);
 	          return value;
@@ -7616,12 +7613,13 @@
 /* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
+	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
 	 * The buffer module from node.js, for the browser.
 	 *
 	 * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
 	 * @license  MIT
 	 */
+	/* eslint-disable no-proto */
 
 	var base64 = __webpack_require__(45)
 	var ieee754 = __webpack_require__(46)
@@ -7661,7 +7659,11 @@
 	 * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
 	 * get the Object implementation, which is slower but behaves correctly.
 	 */
-	Buffer.TYPED_ARRAY_SUPPORT = (function () {
+	Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
+	  ? global.TYPED_ARRAY_SUPPORT
+	  : typedArraySupport()
+
+	function typedArraySupport () {
 	  function Bar () {}
 	  try {
 	    var arr = new Uint8Array(1)
@@ -7674,7 +7676,7 @@
 	  } catch (e) {
 	    return false
 	  }
-	})()
+	}
 
 	function kMaxLength () {
 	  return Buffer.TYPED_ARRAY_SUPPORT
@@ -7830,10 +7832,16 @@
 	  return that
 	}
 
+	if (Buffer.TYPED_ARRAY_SUPPORT) {
+	  Buffer.prototype.__proto__ = Uint8Array.prototype
+	  Buffer.__proto__ = Uint8Array
+	}
+
 	function allocate (that, length) {
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    // Return an augmented `Uint8Array` instance, for best performance
 	    that = Buffer._augment(new Uint8Array(length))
+	    that.__proto__ = Buffer.prototype
 	  } else {
 	    // Fallback: Return an object instance of the Buffer class
 	    that.length = length
@@ -8622,7 +8630,7 @@
 	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
 	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
-	  this[offset] = value
+	  this[offset] = (value & 0xff)
 	  return offset + 1
 	}
 
@@ -8639,7 +8647,7 @@
 	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
-	    this[offset] = value
+	    this[offset] = (value & 0xff)
 	    this[offset + 1] = (value >>> 8)
 	  } else {
 	    objectWriteUInt16(this, value, offset, true)
@@ -8653,7 +8661,7 @@
 	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 8)
-	    this[offset + 1] = value
+	    this[offset + 1] = (value & 0xff)
 	  } else {
 	    objectWriteUInt16(this, value, offset, false)
 	  }
@@ -8675,7 +8683,7 @@
 	    this[offset + 3] = (value >>> 24)
 	    this[offset + 2] = (value >>> 16)
 	    this[offset + 1] = (value >>> 8)
-	    this[offset] = value
+	    this[offset] = (value & 0xff)
 	  } else {
 	    objectWriteUInt32(this, value, offset, true)
 	  }
@@ -8690,7 +8698,7 @@
 	    this[offset] = (value >>> 24)
 	    this[offset + 1] = (value >>> 16)
 	    this[offset + 2] = (value >>> 8)
-	    this[offset + 3] = value
+	    this[offset + 3] = (value & 0xff)
 	  } else {
 	    objectWriteUInt32(this, value, offset, false)
 	  }
@@ -8743,7 +8751,7 @@
 	  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
 	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
 	  if (value < 0) value = 0xff + value + 1
-	  this[offset] = value
+	  this[offset] = (value & 0xff)
 	  return offset + 1
 	}
 
@@ -8752,7 +8760,7 @@
 	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
-	    this[offset] = value
+	    this[offset] = (value & 0xff)
 	    this[offset + 1] = (value >>> 8)
 	  } else {
 	    objectWriteUInt16(this, value, offset, true)
@@ -8766,7 +8774,7 @@
 	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 8)
-	    this[offset + 1] = value
+	    this[offset + 1] = (value & 0xff)
 	  } else {
 	    objectWriteUInt16(this, value, offset, false)
 	  }
@@ -8778,7 +8786,7 @@
 	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
-	    this[offset] = value
+	    this[offset] = (value & 0xff)
 	    this[offset + 1] = (value >>> 8)
 	    this[offset + 2] = (value >>> 16)
 	    this[offset + 3] = (value >>> 24)
@@ -8797,7 +8805,7 @@
 	    this[offset] = (value >>> 24)
 	    this[offset + 1] = (value >>> 16)
 	    this[offset + 2] = (value >>> 8)
-	    this[offset + 3] = value
+	    this[offset + 3] = (value & 0xff)
 	  } else {
 	    objectWriteUInt32(this, value, offset, false)
 	  }
@@ -9072,7 +9080,7 @@
 	      }
 
 	      // valid surrogate pair
-	      codePoint = leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00 | 0x10000
+	      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
 	    } else if (leadSurrogate) {
 	      // valid bmp char, but last char was a lead
 	      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
@@ -9150,7 +9158,7 @@
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44).Buffer, (function() { return this; }())))
 
 /***/ },
 /* 45 */
@@ -9376,7 +9384,7 @@
 /* 47 */
 /***/ function(module, exports) {
 
-	
+
 	/**
 	 * isArray
 	 */
@@ -9417,7 +9425,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
 	 * RSA Encryption / Decryption with PKCS1 v2 Padding.
-	 * 
+	 *
 	 * Copyright (c) 2003-2005  Tom Wu
 	 * All Rights Reserved.
 	 *
@@ -9432,9 +9440,9 @@
 	 * The above copyright notice and this permission notice shall be
 	 * included in all copies or substantial portions of the Software.
 	 *
-	 * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
-	 * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
-	 * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
+	 * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+	 * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+	 * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	 *
 	 * IN NO EVENT SHALL TOM WU BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
 	 * INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY DAMAGES WHATSOEVER
@@ -21253,7 +21261,7 @@
 	      /* This will not work in older browsers.
 	       * See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
 	       */
-	    
+
 	      _crypto.getRandomValues(bytes);
 	      return bytes;
 	    }
@@ -21562,7 +21570,7 @@
 /* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
+
 	/**
 	 * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
 	 * in FIPS 180-2
@@ -22540,7 +22548,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
 	 * Basic JavaScript BN library - subset useful for RSA encryption.
-	 * 
+	 *
 	 * Copyright (c) 2003-2005  Tom Wu
 	 * All Rights Reserved.
 	 *
@@ -22555,9 +22563,9 @@
 	 * The above copyright notice and this permission notice shall be
 	 * included in all copies or substantial portions of the Software.
 	 *
-	 * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
-	 * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
-	 * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
+	 * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+	 * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+	 * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	 *
 	 * IN NO EVENT SHALL TOM WU BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
 	 * INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY DAMAGES WHATSOEVER
@@ -22652,7 +22660,7 @@
 	    return c;
 	}
 
-	// We need to select the fastest one that works in this environment. 
+	// We need to select the fastest one that works in this environment.
 	//if (j_lm && (navigator.appName == "Microsoft Internet Explorer")) {
 	//	BigInteger.prototype.am = am2;
 	//	dbits = 30;
@@ -27390,7 +27398,7 @@
 	              }, 1000);
 
 	              console.log(upd);
-	              
+
 	              if (!upd.alternatives || !upd.alternatives.length) {
 	                $scope.convert.path_status = "no-path";
 	                $scope.convert.alternatives = [];
@@ -28180,24 +28188,19 @@
 	      $scope.update_amount();
 	    };
 
-	    $scope.total_update = function(recipient, currency, amount, dt) {
-	      $scope.send = {};
-	      $scope.send.recipient = recipient;
+	    $scope.send_one_step = function(recipient, currency, amount, dt) {
+	      $scope.send.amount = amount;
 	      $scope.send.currency = currency;
+	      $scope.send.recipient = recipient;
 	      $scope.send.amount = amount;
 	      $scope.send.dt = dt;
-	      $scope.send.recipient_info = {};
-	      $scope.send.recipient_info.exists = true;
-	      $scope.send.recipient_info.dest_tag_required = true;
 
-	      $scope.recipient_update();
-	      $scope.currency_update();
-	      $scope.amount_update();
-
-	      console.log($scope.send.path_status);
-
-	      // send transaction
-	      $scope.send_confirmed();
+	      angular.forEach($scope.send.alternatives, function(value, i) {
+	        if (value.amount._currency._iso_code == currency) {
+	          $scope.send.alt = value;
+	          $scope.send_confirmed();
+	        }
+	      });
 	    };
 
 	    $scope.$watch('send.recipient', $scope.recipient_update, true);
