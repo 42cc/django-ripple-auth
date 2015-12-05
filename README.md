@@ -1,8 +1,10 @@
 django-ripple-auth
 ==================
 
-Install
+Installation
 -------
+
+1. Install
 
     pip install git+https://github.com/42cc/django-ripple-auth
 
@@ -11,24 +13,25 @@ or
     git clone https://github.com/42cc/django-ripple-auth.git
     python setup.py install
 
+2. Add **ripple_auth** to INSTALLED_APPS
+3. Add 'ripple_auth.backend.RippleAuthBackend' to AUTHENTICATION_BACKENDS
+
 Usage
 -----
 
-1. Add **ripple_auth** to INSTALLED_APPS
-2. Add 'ripple_auth.backend.RippleAuthBackend' to AUTHENTICATION_BACKENDS
-3. Add all dependencies to login template using templatetag:
+### Login via ripple
 
+1. Add required dependencies to login template using template tag:
 
         {% load dra_scripts %}
-    
-    and to <head>:
+
+    and to <head></head>:
 
         {% dra_scripts %}
 
-4. Declare in login page template new Angular app and following controllers.
+2. Declare on login page template new Angular app and following controllers.
    In login form you should add following attributes to <input> fields:
 
-        {% load dra_scripts %}
         <html ng-app="rp" ng-controller="AppCtrl" ng-class="[$route.current.tabClass, $route.current.pageMode]">
           <head>
             ...
@@ -53,8 +56,7 @@ Usage
           </body>
         </html>
 
-5. Add separate submit button for login via ripple:
-
+3. Add separate submit button for login via ripple:
 
         <a rp-spinner="" ng-disabled="ajax_loading"
            ng-hide="twoFactor" ng-click="submitForm()" href="" id="ripple-login"
@@ -65,10 +67,19 @@ Usage
           {% endverbatim %}
         </a>
 
-6. Add to urls following patterns:
+4. Add to urls following patterns:
 
 
         from ripple_auth.views import get_challenge, return_challenge
 
         url(r'^get_challenge/$', get_challenge, name='get_challenge')
         url(r'^return_challenge/$', return_challenge, name='return_challenge')
+
+
+### Send ripple payments
+
+1.
+
+2.
+
+3.
