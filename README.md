@@ -6,12 +6,11 @@ Installation
 
 1. Install
 
-    pip install git+https://github.com/42cc/django-ripple-auth
-
+        pip install git+https://github.com/42cc/django-ripple-auth
 or
 
-    git clone https://github.com/42cc/django-ripple-auth.git
-    python setup.py install
+        git clone https://github.com/42cc/django-ripple-auth.git
+        python setup.py install
 
 2. Add **ripple_auth** to INSTALLED_APPS
 3. Add 'ripple_auth.backend.RippleAuthBackend' to AUTHENTICATION_BACKENDS
