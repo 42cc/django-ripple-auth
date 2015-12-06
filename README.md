@@ -24,7 +24,7 @@ Usage
 
         {% load dra_scripts %}
 
-    and to <head></head> (jquery be defined before):
+    and to <head></head> (jquery should be defined before):
 
         {% dra_scripts %}
 
