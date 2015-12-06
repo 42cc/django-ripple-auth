@@ -85,7 +85,7 @@ SendTab.prototype.angular = function (module)
     };
 
     $scope.send_one_step = function(recipient, currency, amount, dt) {
-      $scope.reset_destination_deps();
+      $scope.update_destination_remote();
 
       $scope.send.amount = amount;
       $scope.send.currency = currency;
@@ -97,6 +97,7 @@ SendTab.prototype.angular = function (module)
     $scope.send_payment = function(alt) {
       $scope.send.alt = alt;
       $scope.send_confirmed();
+      $scope.reset_destination_deps();
     };
 
     $scope.$watch('send.recipient', $scope.recipient_update, true);
@@ -571,15 +572,15 @@ SendTab.prototype.angular = function (module)
 
       pf.on('update', function (upd) {
         $scope.$apply(function () {
-          lastUpdate = new Date();
+          // lastUpdate = new Date();
 
           // clearInterval(timer);
-          timer = setInterval(function(){
-            $scope.$apply(function(){
-              var seconds = Math.round((new Date() - lastUpdate)/1000);
-              $scope.lastUpdate = seconds ? seconds : 0;
-            })
-          }, 1000);
+          // timer = setInterval(function(){
+          //   $scope.$apply(function(){
+          //     var seconds = Math.round((new Date() - lastUpdate)/1000);
+          //     $scope.lastUpdate = seconds ? seconds : 0;
+          //   })
+          // }, 1000);
 
           // Check if this request is still current, exit if not
           var now_recipient = send.recipient_actual || send.recipient_address;
@@ -958,7 +959,9 @@ SendTab.prototype.angular = function (module)
         setTimeout(function() {
           $scope.tx_result = 'clear';
         }, 2000);
-        window.location.href = paymentsLink;
+        if (redirectAfterSend) {
+          window.location.href = sendRedirectUrl;
+        }
       }
     };
 

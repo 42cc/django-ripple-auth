@@ -147,7 +147,9 @@ LoginTab.prototype.angular = function (module) {
 
               $challenge.returnChallenge(challenge, signature, pkey, ripple_address, username)
                 .success(function (data) {
-                  window.location.href = loginRedirectUrl;
+                  if (redirectAfterLogin) {
+                    window.location.href = loginRedirectUrl;
+                  }
                   $scope.status = 'Challenge sucessfully processed';
                   console.log('Login success');
                 })

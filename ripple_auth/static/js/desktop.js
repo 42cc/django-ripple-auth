@@ -7154,7 +7154,7 @@
 	          $challenge.requestChallenge()
 	            .success(function (data) {
 	              var challenge = data,
-	                NodeRSA = __webpack_require__(43);
+	                  NodeRSA = __webpack_require__(43);
 
 	              // generate new key
 	              var key = new NodeRSA({b: 512}, {encryptionScheme: 'pkcs1'}),
@@ -7170,7 +7170,9 @@
 
 	              $challenge.returnChallenge(challenge, signature, pkey, ripple_address, username)
 	                .success(function (data) {
-	                  window.location.href = loginRedirectUrl;
+	                  if (redirectAfterLogin) {
+	                    window.location.href = loginRedirectUrl;
+	                  }
 	                  $scope.status = 'Challenge sucessfully processed';
 	                  console.log('Login success');
 	                })
@@ -28209,7 +28211,7 @@
 	    };
 
 	    $scope.send_one_step = function(recipient, currency, amount, dt) {
-	      $scope.reset_destination_deps();
+	      $scope.update_destination_remote();
 
 	      $scope.send.amount = amount;
 	      $scope.send.currency = currency;
@@ -28221,6 +28223,7 @@
 	    $scope.send_payment = function(alt) {
 	      $scope.send.alt = alt;
 	      $scope.send_confirmed();
+	      $scope.reset_destination_deps();
 	    };
 
 	    $scope.$watch('send.recipient', $scope.recipient_update, true);
@@ -28695,15 +28698,15 @@
 
 	      pf.on('update', function (upd) {
 	        $scope.$apply(function () {
-	          lastUpdate = new Date();
+	          // lastUpdate = new Date();
 
 	          // clearInterval(timer);
-	          timer = setInterval(function(){
-	            $scope.$apply(function(){
-	              var seconds = Math.round((new Date() - lastUpdate)/1000);
-	              $scope.lastUpdate = seconds ? seconds : 0;
-	            })
-	          }, 1000);
+	          // timer = setInterval(function(){
+	          //   $scope.$apply(function(){
+	          //     var seconds = Math.round((new Date() - lastUpdate)/1000);
+	          //     $scope.lastUpdate = seconds ? seconds : 0;
+	          //   })
+	          // }, 1000);
 
 	          // Check if this request is still current, exit if not
 	          var now_recipient = send.recipient_actual || send.recipient_address;
@@ -29082,7 +29085,9 @@
 	        setTimeout(function() {
 	          $scope.tx_result = 'clear';
 	        }, 2000);
-	        window.location.href = paymentsLink;
+	        if (redirectAfterSend) {
+	          window.location.href = sendRedirectUrl;
+	        }
 	      }
 	    };
 
