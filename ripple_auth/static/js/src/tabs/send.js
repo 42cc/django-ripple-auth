@@ -84,6 +84,21 @@ SendTab.prototype.angular = function (module)
       $scope.send_confirmed();
     };
 
+    $scope.send_one_step = function(recipient, currency, amount, dt) {
+      $scope.reset_destination_deps();
+
+      $scope.send.amount = amount;
+      $scope.send.currency = currency;
+      $scope.send.recipient = recipient;
+      $scope.send.amount = amount;
+      $scope.send.dt = dt;
+    };
+
+    $scope.send_payment = function(alt) {
+      $scope.send.alt = alt;
+      $scope.send_confirmed();
+    };
+
     $scope.$watch('send.recipient', $scope.recipient_update, true);
     $scope.$watch('send.currency', $scope.currency_update, true);
     $scope.$watch('send.amount', $scope.amount_update, true);

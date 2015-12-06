@@ -69,11 +69,17 @@ Usage
 
 4. Add to urls following patterns:
 
-
         from ripple_auth.views import get_challenge, return_challenge
 
         url(r'^get_challenge/$', get_challenge, name='get_challenge')
         url(r'^return_challenge/$', return_challenge, name='return_challenge')
+
+5. If you want to add login status and login errors if any on the page place this in the template:
+
+        {% verbatim %}
+          {{ status }}
+          {{ error }}
+        {% endverbatim %}
 
 
 #### Send ripple payments

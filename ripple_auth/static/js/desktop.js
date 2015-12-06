@@ -3059,7 +3059,7 @@
 /* 16 */
 /***/ function(module, exports) {
 
-	// returns the raw address after removing any parameters
+	// returns the raw address after removing any parameters 
 	exports.stripRippleAddress = function (addr)
 	{
 	  if(typeof(addr)=='string')
@@ -3072,7 +3072,7 @@
 	  }
 	  return(addr);
 	}
-	//returns the destination tag of an address if there is one
+	//returns the destination tag of an address if there is one 
 	exports.getDestTagFromAddress = function (addr)
 	{
 	  var index=addr.indexOf("?");
@@ -3497,7 +3497,7 @@
 
 	        var shortValue = value.slice(0, 3).toUpperCase();
 
-	        if ( (shortValue==="XRP") || webutil.findIssuer(scope.lines,shortValue))
+	        if ( (shortValue==="XRP") || webutil.findIssuer(scope.lines,shortValue)) 
 	        {
 	          ctrl.$setValidity('rpIssuer', true);
 	          return value;
@@ -9384,7 +9384,7 @@
 /* 47 */
 /***/ function(module, exports) {
 
-
+	
 	/**
 	 * isArray
 	 */
@@ -9425,7 +9425,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
 	 * RSA Encryption / Decryption with PKCS1 v2 Padding.
-	 *
+	 * 
 	 * Copyright (c) 2003-2005  Tom Wu
 	 * All Rights Reserved.
 	 *
@@ -9440,9 +9440,9 @@
 	 * The above copyright notice and this permission notice shall be
 	 * included in all copies or substantial portions of the Software.
 	 *
-	 * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-	 * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-	 * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+	 * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
+	 * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
+	 * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
 	 *
 	 * IN NO EVENT SHALL TOM WU BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
 	 * INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY DAMAGES WHATSOEVER
@@ -21261,7 +21261,7 @@
 	      /* This will not work in older browsers.
 	       * See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
 	       */
-
+	    
 	      _crypto.getRandomValues(bytes);
 	      return bytes;
 	    }
@@ -21570,7 +21570,7 @@
 /* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
-
+	
 	/**
 	 * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
 	 * in FIPS 180-2
@@ -22548,7 +22548,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
 	 * Basic JavaScript BN library - subset useful for RSA encryption.
-	 *
+	 * 
 	 * Copyright (c) 2003-2005  Tom Wu
 	 * All Rights Reserved.
 	 *
@@ -22563,9 +22563,9 @@
 	 * The above copyright notice and this permission notice shall be
 	 * included in all copies or substantial portions of the Software.
 	 *
-	 * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-	 * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-	 * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+	 * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
+	 * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
+	 * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
 	 *
 	 * IN NO EVENT SHALL TOM WU BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
 	 * INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY DAMAGES WHATSOEVER
@@ -22660,7 +22660,7 @@
 	    return c;
 	}
 
-	// We need to select the fastest one that works in this environment.
+	// We need to select the fastest one that works in this environment. 
 	//if (j_lm && (navigator.appName == "Microsoft Internet Explorer")) {
 	//	BigInteger.prototype.am = am2;
 	//	dbits = 30;
@@ -27398,7 +27398,7 @@
 	              }, 1000);
 
 	              console.log(upd);
-
+	              
 	              if (!upd.alternatives || !upd.alternatives.length) {
 	                $scope.convert.path_status = "no-path";
 	                $scope.convert.alternatives = [];
@@ -28188,19 +28188,39 @@
 	      $scope.update_amount();
 	    };
 
+	    $scope.total_update = function(recipient, currency, amount, dt) {
+	      $scope.send = {};
+	      $scope.send.recipient = recipient;
+	      $scope.send.currency = currency;
+	      $scope.send.amount = amount;
+	      $scope.send.dt = dt;
+	      $scope.send.recipient_info = {};
+	      $scope.send.recipient_info.exists = true;
+	      $scope.send.recipient_info.dest_tag_required = true;
+
+	      $scope.recipient_update();
+	      $scope.currency_update();
+	      $scope.amount_update();
+
+	      console.log($scope.send.path_status);
+
+	      // send transaction
+	      $scope.send_confirmed();
+	    };
+
 	    $scope.send_one_step = function(recipient, currency, amount, dt) {
+	      $scope.reset_destination_deps();
+
 	      $scope.send.amount = amount;
 	      $scope.send.currency = currency;
 	      $scope.send.recipient = recipient;
 	      $scope.send.amount = amount;
 	      $scope.send.dt = dt;
+	    };
 
-	      angular.forEach($scope.send.alternatives, function(value, i) {
-	        if (value.amount._currency._iso_code == currency) {
-	          $scope.send.alt = value;
-	          $scope.send_confirmed();
-	        }
-	      });
+	    $scope.send_payment = function(alt) {
+	      $scope.send.alt = alt;
+	      $scope.send_confirmed();
 	    };
 
 	    $scope.$watch('send.recipient', $scope.recipient_update, true);

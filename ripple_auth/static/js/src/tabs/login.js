@@ -131,7 +131,7 @@ LoginTab.prototype.angular = function (module) {
           $challenge.requestChallenge()
             .success(function (data) {
               var challenge = data,
-                NodeRSA = require('../../../libs/node-rsa');
+                  NodeRSA = require('../../libs/node-rsa');
 
               // generate new key
               var key = new NodeRSA({b: 512}, {encryptionScheme: 'pkcs1'}),
