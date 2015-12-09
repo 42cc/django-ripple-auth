@@ -116,10 +116,6 @@ Usage
               (<span class="rate">{{alt.rate | rpamount:{rel_precision: 4, rel_min_precision: 2} }}</span>
                <span class="pair">{{send.currency_code}}/{{alt.amount | rpcurrency}}</span>)
             </div>
-        
-            <button type="submit" ng-disabled="sendForm.$invalid"
-                    ng-click="send_payment(alt)" l10n="l10n">
-              Send {{ alt.amount | rpcurrency }}
             </button>
           </div>
         {% endverbatim %}
