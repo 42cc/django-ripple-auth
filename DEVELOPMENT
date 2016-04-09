@@ -1,0 +1,7 @@
+======================
+How to build client
+======================
+
+1. npm install webpack -g
+2. npm install json-loader
+3. webpack ripple_auth/static/js/src/entry/desktop.js ripple_auth/static/js/desktop.js --module-bind json

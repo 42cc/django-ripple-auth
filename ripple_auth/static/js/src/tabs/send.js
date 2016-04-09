@@ -85,13 +85,21 @@ SendTab.prototype.angular = function (module)
     };
 
     $scope.send_one_step = function(recipient, currency, amount, dt) {
-      $scope.update_destination_remote();
-
-      $scope.send.amount = amount;
-      $scope.send.currency = currency;
-      $scope.send.recipient = recipient;
-      $scope.send.amount = amount;
-      $scope.send.dt = dt;
+      var scope = angular.element(document.querySelectorAll('[ng-controller=AppCtrl]')).scope();
+      scope.network.remote.connect();
+      function waitForConnection() {
+        if (scope.network.connected==false) {
+            setTimeout(waitForConnection, 500);
+        } else {
+          $scope.send.amount = amount;
+          $scope.send.currency = currency;
+          $scope.send.recipient = recipient;
+          $scope.send.amount = amount;
+          $scope.send.dt = dt;
+          $scope.update_destination_remote();
+        }
+      }
+      waitForConnection();
     };
 
     $scope.send_payment = function(alt) {
@@ -221,7 +229,7 @@ SendTab.prototype.angular = function (module)
     // Check destination for XRP sufficiency and flags
     $scope.check_destination = function () {
       var send = $scope.send;
-      var recipient = send.recipient_actual || send.recipient_address;
+      var recipient = send.recipient_actual || send.recipient_address || send.recipient;
 
       if (!ripple.UInt160.is_valid(recipient)) return;
 

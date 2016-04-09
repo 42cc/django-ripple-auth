@@ -5911,7 +5911,7 @@
 
 	  Network.prototype.init = function ()
 	  {
-	    this.remote.connect();
+	    $scope.network = this;
 	  };
 
 	  /**
@@ -7623,6 +7623,8 @@
 	 */
 	/* eslint-disable no-proto */
 
+	'use strict'
+
 	var base64 = __webpack_require__(45)
 	var ieee754 = __webpack_require__(46)
 	var isArray = __webpack_require__(47)
@@ -7705,8 +7707,10 @@
 	    return new Buffer(arg)
 	  }
 
-	  this.length = 0
-	  this.parent = undefined
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+	    this.length = 0
+	    this.parent = undefined
+	  }
 
 	  // Common case.
 	  if (typeof arg === 'number') {
@@ -7837,6 +7841,10 @@
 	if (Buffer.TYPED_ARRAY_SUPPORT) {
 	  Buffer.prototype.__proto__ = Uint8Array.prototype
 	  Buffer.__proto__ = Uint8Array
+	} else {
+	  // pre-set for values that may exist in the future
+	  Buffer.prototype.length = undefined
+	  Buffer.prototype.parent = undefined
 	}
 
 	function allocate (that, length) {
@@ -7986,10 +7994,6 @@
 	  }
 	}
 	Buffer.byteLength = byteLength
-
-	// pre-set for values that may exist in the future
-	Buffer.prototype.length = undefined
-	Buffer.prototype.parent = undefined
 
 	function slowToString (encoding, start, end) {
 	  var loweredCase = false
@@ -9386,38 +9390,10 @@
 /* 47 */
 /***/ function(module, exports) {
 
-	
-	/**
-	 * isArray
-	 */
+	var toString = {}.toString;
 
-	var isArray = Array.isArray;
-
-	/**
-	 * toString
-	 */
-
-	var str = Object.prototype.toString;
-
-	/**
-	 * Whether or not the given `val`
-	 * is an array.
-	 *
-	 * example:
-	 *
-	 *        isArray([]);
-	 *        // > true
-	 *        isArray(arguments);
-	 *        // > false
-	 *        isArray('');
-	 *        // > false
-	 *
-	 * @param {mixed} val
-	 * @return {bool}
-	 */
-
-	module.exports = isArray || function (val) {
-	  return !! val && '[object Array]' == str.call(val);
+	module.exports = Array.isArray || function (arr) {
+	  return toString.call(arr) == '[object Array]';
 	};
 
 
@@ -28211,13 +28187,21 @@
 	    };
 
 	    $scope.send_one_step = function(recipient, currency, amount, dt) {
-	      $scope.update_destination_remote();
-
-	      $scope.send.amount = amount;
-	      $scope.send.currency = currency;
-	      $scope.send.recipient = recipient;
-	      $scope.send.amount = amount;
-	      $scope.send.dt = dt;
+	      var scope = angular.element(document.querySelectorAll('[ng-controller=AppCtrl]')).scope();
+	      scope.network.remote.connect();
+	      function waitForConnection() {
+	        if (scope.network.connected==false) {
+	            setTimeout(waitForConnection, 500);
+	        } else {
+	          $scope.send.amount = amount;
+	          $scope.send.currency = currency;
+	          $scope.send.recipient = recipient;
+	          $scope.send.amount = amount;
+	          $scope.send.dt = dt;
+	          $scope.update_destination_remote();
+	        }
+	      }
+	      waitForConnection();
 	    };
 
 	    $scope.send_payment = function(alt) {
@@ -28347,7 +28331,7 @@
 	    // Check destination for XRP sufficiency and flags
 	    $scope.check_destination = function () {
 	      var send = $scope.send;
-	      var recipient = send.recipient_actual || send.recipient_address;
+	      var recipient = send.recipient_actual || send.recipient_address || send.recipient;
 
 	      if (!ripple.UInt160.is_valid(recipient)) return;
 

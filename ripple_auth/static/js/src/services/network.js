@@ -31,7 +31,7 @@ module.factory('rpNetwork', ['$rootScope', function($scope)
 
   Network.prototype.init = function ()
   {
-    this.remote.connect();
+    $scope.network = this;
   };
 
   /**
