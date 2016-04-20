@@ -34,6 +34,10 @@ var Options = {
   // intended for developers, be careful about using this in a real setting.
   persistent_auth: false,
 
+  // Save to persistent storage blob key instead of login/pass
+  // Do not turn this value to false if no necessary
+  ripple_auth_blob: true,
+
   historyApi: 'https://history.ripple.com:7443/v1',
 
   // Number of transactions each page has in balance tab notifications

@@ -117,8 +117,11 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
       }
     });
 
-    if (Options.persistent_auth && !!store.get('ripple_auth')) {
-      var auth = store.get('ripple_auth');
+    if (Options.persistent_auth && (!!store.get('ripple_auth') || !!store.get('ripple_keys'))) {
+      var auth = store.get('ripple_auth'),
+          blob_key = store.get('ripple_keys')? store.get('ripple_keys').blob_key : null,
+          username = auth? auth.username : '',
+          password = auth? auth.password : '';
 
       // XXX This is technically not correct, since we don't know yet whether
       //     the login will succeed. But we need to set it now, because the page
@@ -128,7 +131,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
       //     Probably not a big deal as persistent_auth is only used by
       //     developers.
       self.loginStatus = true;
-      this.login(auth.username, auth.password, function (err) {
+      this.login(username, password, blob_key, function (err) {
         // XXX If there was a login error, we're now in a broken state.
       });
     }
@@ -171,7 +174,18 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
   Id.prototype.storeLogin = function (username, password)
   {
     if (Options.persistent_auth && !store.disabled) {
-      store.set('ripple_auth', {username: username, password: password});
+      if(!username && !password){
+          return
+      }
+      var blob_key = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(username + password)),
+          blob_enc_key = sjcl.encrypt(blob_key, ""+username.length+'|'+username+password);
+
+      if(Options.ripple_auth_blob){
+        store.set('ripple_keys', {blob_key: blob_key, blob_enc_key: blob_enc_key});
+      }
+      else {
+        store.set('ripple_auth', {username: username, password: password});
+      }
     }
   };
 
@@ -233,7 +247,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     });
   };
 
-  Id.prototype.login = function (username, password, callback)
+  Id.prototype.login = function (username, password, key, callback)
   {
     var self = this;
 
@@ -243,10 +257,10 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
       self.init();
     }
 
-    username = Id.normalizeUsername(username);
-    password = Id.normalizePassword(password);
+    username = username? Id.normalizeUsername(username).toLowerCase() : username;
+	password = Id.normalizePassword(password);
 
-    $oldblob.get(self.blobBackends, username.toLowerCase(), password, function (err, data) {
+    $oldblob.get(self.blobBackends, username, password, key, function (err, data) {
       if (err) {
         callback(err);
         return;
@@ -293,6 +307,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
   Id.prototype.logout = function ()
   {
     store.remove('ripple_auth');
+    store.remove('ripple_keys');
 
     // problem?
     // reload will not work, as some pages are also available for guests.
