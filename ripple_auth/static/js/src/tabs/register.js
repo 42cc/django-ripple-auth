@@ -123,7 +123,7 @@ RegisterTab.prototype.angular = function (module) {
 
             $scope.register();
           } else {
-            $id.login($scope.username, $scope.password1, function (error) {
+            $id.login($scope.username, $scope.password1, null, function (error) {
               $scope.submitLoading = false;
               if (error) {
                 // There is a conflicting wallet, but we can't login to it
