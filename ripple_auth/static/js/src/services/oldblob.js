@@ -37,13 +37,13 @@ module.factory('rpOldBlob', ['$rootScope', function ($scope)
   /**
    * Attempts to retrieve the blob from the specified backend.
    */
-  BlobObj.get = function(backends, user, pass, callback)
+  BlobObj.get = function(backends, user, pass, key, callback)
   {
     backends = processBackendsParam(backends);
 
     var backend = backends.shift();
 
-    var key = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(user + pass));
+    var key = user? sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(user + pass)) : key;
     try {
       backend.get(key, function (err, data) {
         setImmediate(function () {
@@ -92,7 +92,9 @@ module.factory('rpOldBlob', ['$rootScope', function ($scope)
     if (typeof(bl.data.contacts) === 'object')
       bl.data.contacts = angular.fromJson(angular.toJson(bl.data.contacts));
 
-    var key = ""+username.length+'|'+username+password;
+    var stored_keys = store.get('ripple_keys'),
+        stored_enc_key = stored_keys? sjcl.decrypt(stored_keys.blob_key, stored_keys.blob_enc_key): null,
+	    key =  stored_enc_key? stored_enc_key : ""+username.length+'|'+username+password;
     return btoa(sjcl.encrypt(key, JSON.stringify(bl.data), {
       iter: 1000,
       adata: JSON.stringify(bl.meta),
@@ -100,14 +102,14 @@ module.factory('rpOldBlob', ['$rootScope', function ($scope)
     }));
   };
 
-  BlobObj.set = function(backends, username, password, bl, callback)
+  BlobObj.set = function(backends, username, password, key, bl, callback)
   {
     // Callback is optional
     if ("function" !== typeof callback) callback = $.noop;
 
     backends = processBackendsParam(backends);
 
-    var hash = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(username + password));
+    var hash = username? sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(username + password)) : key;
     var encData = BlobObj.enc(username, password, bl);
 
     backends.forEach(function (backend) {
@@ -126,16 +128,17 @@ module.factory('rpOldBlob', ['$rootScope', function ($scope)
       return blob;
     }
 
-    var key;
     try {
       // Try new-style key
-      key = ""+user.length+'|'+user+pass;
+      var stored_keys = store.get('ripple_keys'),
+          stored_enc_key = stored_keys? sjcl.decrypt(stored_keys.blob_key, stored_keys.blob_enc_key): null,
+	      key =  stored_enc_key? stored_enc_key : ""+user.length+'|'+user+pass;
       return decrypt(key, atob(data));
     } catch (e1) {
       console.log("Blob decryption failed with new-style key:", e1.toString());
       try {
         // Try old style key
-        key = user+pass;
+        var key = user+pass;
         var blob = decrypt(key, atob(data));
         blob.old = true;
         return blob;
