@@ -103,7 +103,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
 
       if (self.username && self.password) {
         $oldblob.set(self.blobBackends,
-                  self.username.toLowerCase(), self.password,
+                  self.username.toLowerCase(), self.password, null,
                   $scope.userBlob,function(){
                     $scope.$broadcast('$blobSave');
                   });
@@ -218,7 +218,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     };
 
     // Add user to blob
-    $oldblob.set(self.blobBackends, username.toLowerCase(), password, data, function () {
+    $oldblob.set(self.blobBackends, username.toLowerCase(), password, null, data, function () {
       $scope.userBlob = data;
       self.setUsername(username);
       self.setPassword(password);
