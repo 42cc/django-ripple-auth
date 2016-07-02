@@ -31,7 +31,6 @@ require('../services/zipzap');
 var appDependencies = [
   'ng',
   'ngRoute',
-  'ngCookies',
   // Controllers
   'app',
   'status',
@@ -143,11 +142,11 @@ if (!Options.blobvault) {
 }
 
 // Logout if ripple_auth cookie doesn't exists
-  if(Options.requiredRippleAuth &&
-      Options.logoutRedirectUrl &&
-      !window.localStorage.getItem('ripple_auth')){
-      window.location = Options.logoutRedirectUrl;
-  }
+if(Options.requiredRippleAuth &&
+  Options.logoutRedirectUrl &&
+  !window.localStorage.getItem('ripple_auth')){
+  window.location = Options.logoutRedirectUrl;
+}
 
 
 if ("function" === typeof angular.resumeBootstrap) angular.resumeBootstrap();
