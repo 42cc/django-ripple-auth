@@ -31,6 +31,7 @@ require('../services/zipzap');
 var appDependencies = [
   'ng',
   'ngRoute',
+  'ngCookies',
   // Controllers
   'app',
   'status',
@@ -91,8 +92,8 @@ var rippleclient = window.rippleclient = {};
 rippleclient.app = app;
 rippleclient.types = types;
 
-app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location',
-         function ($rootScope, $injector, $compile, $route, $routeParams, $location)
+app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location', '$cookies',
+         function ($rootScope, $injector, $compile, $route, $routeParams, $location, $cookies)
 {
   // Global reference for debugging only (!)
   if ("object" === typeof rippleclient) {
@@ -109,6 +110,7 @@ app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$loca
   // if url has a + or %2b then replace with %20 and redirect
   if (_.isArray($location.$$absUrl.match(/%2B|\+/gi)))
     window.location = $location.$$absUrl.replace(/%2B|\+/gi, '%20');
+
 
   var scope = $rootScope;
   $rootScope.$route = $route;
@@ -139,5 +141,13 @@ app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$loca
 if (!Options.blobvault) {
   Options.blobvault = Options.BLOBVAULT_SERVER;
 }
+
+// Logout if ripple_auth cookie doesn't exists
+  if(Options.requiredRippleAuth &&
+      Options.logoutRedirectUrl &&
+      !window.localStorage.getItem('ripple_auth')){
+      window.location = Options.logoutRedirectUrl;
+  }
+
 
 if ("function" === typeof angular.resumeBootstrap) angular.resumeBootstrap();
