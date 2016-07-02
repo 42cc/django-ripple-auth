@@ -144,7 +144,8 @@ if (!Options.blobvault) {
 // Logout if ripple_auth cookie doesn't exists
 if(Options.requiredRippleAuth &&
   Options.logoutRedirectUrl &&
-  !window.localStorage.getItem('ripple_auth')){
+  !window.localStorage.getItem('ripple_auth') &&
+  Options.logoutExclude.indexOf(window.location.pathname) == -1){
   window.location = Options.logoutRedirectUrl;
 }
 

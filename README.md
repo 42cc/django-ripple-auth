@@ -336,3 +336,8 @@ Usage
 `redirectAfterSend (true/false)` - if you want redirect to some url after send payment
 
 `sendRedirectUrl` - if redirectAfterSend is enabled - redirect on specified url
+
+`requiredRippleAuth` - if requiredRippleAuth is enabled, and logoutRedirectUrl specified, then
+redirect to logoutRedirectUrl will be performed if local storage doesn't contains ripple_auth
+variable. Note: logoutExclude contains pathnames which not processed by this rules, put login form url pathname
+there
