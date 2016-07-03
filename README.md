@@ -339,5 +339,4 @@ Usage
 
 `requiredRippleAuth` - if requiredRippleAuth is enabled, and logoutRedirectUrl specified, then
 redirect to logoutRedirectUrl will be performed if local storage doesn't contains ripple_auth
-variable. Note: logoutExclude contains pathnames which not processed by this rules, put login form url pathname
-there
+variable and user is logged in (See django_logged_in variable in dra_scripts tag).

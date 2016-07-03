@@ -145,7 +145,7 @@ if (!Options.blobvault) {
 if(Options.requiredRippleAuth &&
   Options.logoutRedirectUrl &&
   !window.localStorage.getItem('ripple_auth') &&
-  Options.logoutExclude.indexOf(window.location.pathname) == -1){
+  django_logged_in == 'True'){
   window.location = Options.logoutRedirectUrl;
 }
 

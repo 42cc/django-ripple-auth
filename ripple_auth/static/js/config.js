@@ -43,7 +43,6 @@ var Options = {
   // if ripple_auth variable isn't exists in localStorage
   requiredRippleAuth: false,
   logoutRedirectUrl: null,
-  logoutExclude: ['/login/'],
 
   historyApi: 'https://history.ripple.com:7443/v1',
 
