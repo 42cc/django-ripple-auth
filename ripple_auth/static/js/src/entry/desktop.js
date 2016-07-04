@@ -91,8 +91,8 @@ var rippleclient = window.rippleclient = {};
 rippleclient.app = app;
 rippleclient.types = types;
 
-app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location', '$cookies',
-         function ($rootScope, $injector, $compile, $route, $routeParams, $location, $cookies)
+app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location',
+         function ($rootScope, $injector, $compile, $route, $routeParams, $location)
 {
   // Global reference for debugging only (!)
   if ("object" === typeof rippleclient) {
