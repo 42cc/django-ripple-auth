@@ -110,6 +110,7 @@ app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$loca
   if (_.isArray($location.$$absUrl.match(/%2B|\+/gi)))
     window.location = $location.$$absUrl.replace(/%2B|\+/gi, '%20');
 
+
   var scope = $rootScope;
   $rootScope.$route = $route;
   $rootScope.$routeParams = $routeParams;
@@ -139,5 +140,14 @@ app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$loca
 if (!Options.blobvault) {
   Options.blobvault = Options.BLOBVAULT_SERVER;
 }
+
+// Logout if ripple_auth cookie doesn't exists
+if(Options.requiredRippleAuth &&
+  Options.logoutRedirectUrl &&
+  !window.localStorage.getItem('ripple_auth') &&
+  django_logged_in == 'True'){
+  window.location = Options.logoutRedirectUrl;
+}
+
 
 if ("function" === typeof angular.resumeBootstrap) angular.resumeBootstrap();
