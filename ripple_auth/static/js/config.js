@@ -38,6 +38,12 @@ var Options = {
   // Do not turn this value to false if no necessary
   ripple_auth_blob: true,
 
+  // if requiredRippleAuth is "true" and
+  // logoutRedirectUrl specified, then redirect will be performed
+  // if ripple_auth variable isn't exists in localStorage
+  requiredRippleAuth: false,
+  logoutRedirectUrl: null,
+
   historyApi: 'https://history.ripple.com:7443/v1',
 
   // Number of transactions each page has in balance tab notifications
