@@ -15,6 +15,7 @@ or
 2. Add **ripple_auth** to INSTALLED_APPS
 3. Add 'ripple_auth.backend.RippleAuthBackend' to AUTHENTICATION_BACKENDS
 
+
 Usage
 -----
 
