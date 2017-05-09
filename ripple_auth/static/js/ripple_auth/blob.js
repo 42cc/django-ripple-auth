@@ -48,7 +48,7 @@ BlobObj.get = function(username, password, key, callback) {
 				BlobObj.handleError('Wallet not found (Username / Password is wrong)');
 			}
 		});
-	} catch (err) {
+	} catch (error) {
 		BlobObj.handleError(error);
 	}
 };
