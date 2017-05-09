@@ -3,12 +3,12 @@
  */
 function isLoggedIn() {
 	var rippleKeys = store.get('ripple_keys');
-	if (rippleKeys === 'undefined') {
+	if (rippleKeys === undefined) {
 		return false;
 	}
 	var blobKey = rippleKeys.blob_key;
 	var blobEncKey = rippleKeys.blob_enc_key;
-	return typeof blobKey !== 'undefined' && typeof blobEncKey !== 'undefined'
+	return typeof blobKey !== undefined && typeof blobEncKey !== undefined;
 }
 
 
