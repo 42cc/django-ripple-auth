@@ -2,9 +2,12 @@
  * Check if user is logged in ripple
  */
 function isLoggedIn() {
-	var blobKey = store.get('ripple_keys').blob_key;
-	var blobEncKey = store.get('ripple_keys').blob_enc_key;
-
+	var rippleKeys = store.get('ripple_keys');
+	if (rippleKeys === 'undefined') {
+		return false;
+	}
+	var blobKey = rippleKeys.blob_key;
+	var blobEncKey = rippleKeys.blob_enc_key;
 	return typeof blobKey !== 'undefined' && typeof blobEncKey !== 'undefined'
 }
 
