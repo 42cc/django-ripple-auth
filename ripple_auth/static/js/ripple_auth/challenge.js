@@ -71,9 +71,7 @@ window.Challenge.returnChallenge = function(id, blob, challenge, signature, publ
       id.storeLogin(id.username, id.password);
 			setTimeout(function() {
 				// redirect after login
-				if (Options.after_login_action.length) {
-					Options.after_login_action();
-				}
+				Options.after_login_action();
 				console.log('Login success');
 			}, 1000);
     },
