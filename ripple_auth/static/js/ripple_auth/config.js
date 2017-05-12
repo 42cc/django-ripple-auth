@@ -58,8 +58,8 @@ var Options = {
   // Challenge related stuff
   challenge_process_url: '/process_challenge/',
 
-  // After login options
-  redirect_url: '/projects',
+  // After login action
+  after_login_action: function() {window.location.href = '/projects'},
 
 	// Selectors
 	login_btn: '#ripple-login',
